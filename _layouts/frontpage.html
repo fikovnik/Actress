@@ -1,0 +1,31 @@
+---
+layout: base
+title: ACTRESS Toolkit
+---
+<div class="beta-ribbon-wrapper left">
+    <div class="beta-ribbon">
+        <a href="https://github.com/fikovnik/Actress">Work in progress</a>
+    </div>
+</div>
+<div class="hero-unit">
+<h1>{{ site.title }}</h1>
+<p>Model driven software development toolkit for developing feedback control software systems.</p>
+</div>
+
+<!-- Example row of columns -->
+<div class="row">
+<div class="span8">
+
+    {{ content }}
+
+</div>
+<div class="span6">
+  <h2>Documentation</h2>
+    <dl>
+      {% for item in site.docs %}
+        <dt><a href="{{ item.url }}">{{ item.title }}</a></dt>
+        <dd>{{ item.desc }}</dd>
+      {% endfor %}
+    </dl>
+</div>
+</div>
