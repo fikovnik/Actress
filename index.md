@@ -14,7 +14,7 @@ To cope with evolving requirements and environmental conditions, software system
 ACTRESS Toolkit captures an outgoing work towards the goal of providing a model-driven development toolkit for designing, implementing and validating adaptive behavior that can be added on a top of existing computing systems thus turning them into self-adaptive systems.
 This toolkit gives system administrators, control theorists and other computer scientists building blocks that allows them to quickly prototype and test adaptation strategies and abstracts them from the painful low-level implementation details.
 
-ACTRESS is an MDE toolchain built using [SIGMA](http://fikovnik.bet/Sigma).
+ACTRESS is an MDE toolchain built using [SIGMA](http://fikovnik.net/Sigma).
 
 ## Publications ##
 
