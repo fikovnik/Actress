@@ -1,14 +1,10 @@
-title: "ACTRESS Toolkit"
-description: "Documentation for the ACTRESS Toolkit"
+title: "The ACTRESS Modeling Environment"
+description: "Documentation for the ACTRESS Modeling Environment"
 
 pygments: true
 
 docs:
   - 
-    title: Feedbck Control Description Model (FCDM) 
-    url: fcdm.html
-    desc: The ACTRESS meta-model for describing feedback control.
-  - 
-    title: Feedback Control Description Language (FCDL)
-    url: fcdl.html
-    desc: The ACTRESS DSL for creating the FCDM models. 
+    title: Feedback Control Definition Language (FCDL)
+    url: FCDL.pdf
+    desc: Technical report documenting the domain-specific modeling language for defining self-adaptive software system architectures through external feedback control loops and the ACTRESS modeling environment. 

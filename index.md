@@ -1,6 +1,6 @@
 ---
 layout: frontpage
-title: ACTRESS Toolkt
+title: The ACTRESS Modeling Environment
 ---
 
 ## About ##
@@ -11,10 +11,10 @@ To cope with evolving requirements and environmental conditions, software system
 * a support for verification using a variety of techniques that enables one to easily check different structural and behavioral properties on FCLs, and 
 * an actor-oriented runtime environment.
 
-ACTRESS Toolkit captures an outgoing work towards the goal of providing a model-driven development toolkit for designing, implementing and validating adaptive behavior that can be added on a top of existing computing systems thus turning them into self-adaptive systems.
+The ACTRESS Modeling Environment captures an outgoing work towards the goal of providing a model-driven development toolkit for designing, implementing and validating adaptive behavior that can be added on a top of existing computing systems thus turning them into self-adaptive systems.
 This toolkit gives system administrators, control theorists and other computer scientists building blocks that allows them to quickly prototype and test adaptation strategies and abstracts them from the painful low-level implementation details.
 
-ACTRESS is an MDE toolchain built using [SIGMA](http://fikovnik.net/Sigma).
+ACTRESS is a modeling environment built using [SIGMA](http://fikovnik.net/Sigma).
 
 ## Publications ##
 
