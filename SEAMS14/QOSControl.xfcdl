@@ -1,0 +1,84 @@
+package cs1
+
+processor LoadMonitor {
+	in pull port requests: int
+	in pull port size: long
+	out pull port utilization: double
+
+	property a: Double
+	property b: Double
+
+	act activate(utilization;requests,size;)
+
+	implementation xbase {
+	    var lastTime = 0 //System::currentTimeMillis
+	    
+		act activate {
+		    val elapsed = 0//System::currentTimeMillis - lastTime
+			val R = requests.get.get / elapsed
+			val W = size.get.get / elapsed
+			
+			a*R + b*W
+		}
+	}
+}
+
+controller PController {
+  in push port input: double   
+  out push port output: double
+  property Kp: double // proportional gain
+  property reference: double // reference input
+  property loBnd: double // lower bound
+  property upBnd: double // upper bound
+
+	act activate(input; ; output)
+  
+  implementation xbase {
+    var U = reference // new variable
+    // implementation of the `act activate(input; ; output)`
+    act activate {
+        val E = reference - input  // computes the error        
+        U = U + Kp * E // computes new output
+        if (U < loBnd) U = loBnd; if (U > upBnd) U = upBnd // corr. bounds
+        U // returns the result
+    }
+  }
+}
+
+composite QOSControl {
+    
+	property k: double
+	property targetUtilization: double
+	property M: int
+	property a: double
+	property b: double
+
+	feature requestsCounter = new Accumulator
+	feature responseSizeCounter = new Accumulator
+	feature loadMonitor = new LoadMonitor {
+	  a = this.a
+	  b = this.b
+	}
+
+	connect requestsCounter.sum to loadMonitor.requests
+	connect responseSizeCounter.sum to loadMonitor.size
+	
+	feature scheduler = new PeriodicTrigger<Double> {
+		initialPeriod = 10.seconds
+	}
+	
+	feature utilizationController = new PController {
+		Kp = this.k
+		reference = this.targetUtilization
+		loBnd = 0
+		upBnd = this.M
+	}
+	
+	connect loadMonitor.utilization to scheduler.input
+	connect scheduler.output to utilizationController.input
+    
+	promote requestsCounter.input as requests
+	promote responseSizeCounter.input as size
+	promote utilizationController.output as contentTree
+}
+

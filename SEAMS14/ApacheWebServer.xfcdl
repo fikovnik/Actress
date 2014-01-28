@@ -1,0 +1,17 @@
+package cs1
+
+composite ApacheWebServer {
+    property accessLogFile: String
+	
+	feature accessLog = new FileTailer {
+	  file = accessLogFile
+	}
+	feature accessLogParser = new AccessLogParser
+	feature adaptor = new FileWriter
+	
+    connect accessLog.lines to accessLogParser.lines
+
+	promote accessLogParser.size
+	promote accessLogParser.requests
+	promote adaptor.value
+}
