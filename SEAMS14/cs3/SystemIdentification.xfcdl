@@ -1,0 +1,65 @@
+package cs3
+
+import commons.*
+
+composite UtilizationMonitor {    
+	property a: double
+	property b: double
+
+	feature requestsCounter = new Accumulator
+	feature responseSizeCounter = new Accumulator
+	feature loadMonitor = new cs1.LoadMonitor {
+	  a = this.a
+	  b = this.b
+	}
+
+	connect requestsCounter.sum to loadMonitor.requests
+	connect responseSizeCounter.sum to loadMonitor.size
+	
+	promote requestsCounter.input as requests
+	promote responseSizeCounter.input as size
+	promote loadMonitor.utilization
+}
+
+composite SystemIdentification {
+	property logFile: String
+	property contentTreeFile: String
+    property accessLogFile: String
+	property a: double
+	property b: double
+	property contentTreeAmpitude: double
+	property contentTreePeriod: double
+	
+	feature utilization = new UtilizationMonitor {
+		a = this.a
+		b = this.b
+	}
+	
+	feature contentTree = new FileReader {
+		file = this.contentTreeFile
+		all = true
+	}
+	
+	feature sample = new Tuple2<Double,Double>
+	feature scheduler = new PeriodicTrigger<commons.impl.Tuple2<Double,Double>>
+	feature log = new FileWriter {
+		file = this.logFile
+	}
+	
+	feature server = new cs1.ApacheWebServer {
+	  accessLogFile = this.accessLogFile
+      contentTreeFile = this.contentTreeFile
+	}
+	feature contentTreeGen = new SineWave {
+		amplitude = this.contentTreeAmpitude
+		period = this.contentTreePeriod
+	}
+	
+	connect server.requests to utilization.requests
+	connect server.size to utilization.size
+	connect utilization.utilization to sample.input1
+	connect contentTree.output to sample.input2
+	connect sample.output to scheduler.input
+	connect scheduler.output to log.value
+	connect contentTreeGen.output to server.contentTree
+}

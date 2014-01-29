@@ -1,0 +1,35 @@
+package cs4
+
+@Main
+composite AdaptiveApacheQOS {
+	property k: double
+	property targetUtilization: double
+	property M: int
+	property a: double
+	property b: double
+	property accessLogFile: String 
+	property contentTreeFile: String 
+	
+	feature server = new cs1.ApacheWebServer {
+	  accessLogFile = this.accessLogFile
+	  contentTreeFile = this.contentTreeFile
+	}
+	
+	feature control = new QOSControl {
+	  k = this.k
+	  targetUtilization = this.targetUtilization
+	  M = this.M
+	  a = this.a
+	  b = this.b 
+	}
+	
+	feature adaptiveControl = new AdaptiveControl
+
+	connect server.requests to control.requests
+	connect server.size to control.size
+	connect control.contentTree to server.contentTree
+	
+	connect control.utilization to adaptiveControl.utilization
+	connect control.contentTree to adaptiveControl.contentTree
+	connect adaptiveControl.Kp to control.Kp	
+}

@@ -1,0 +1,35 @@
+package cs2
+
+import commons.*
+
+controller LoadBalancerController {
+	in push port hostname: String
+	out push port hostname: String
+	
+	act activate(hostname;; hostname)
+}
+
+@Main
+composite LoadBalancerControl {
+	
+	property eventBus: String
+	property lbProxyConf: String
+	
+	feature contentTreeSub = new EventBusSubscriber<commons.impl.Tuple2<String,Double>> {
+		eventBus = this.eventBus
+		channel = "contentTree"
+	}
+	feature contentTree = new MapStore<String,Double>
+	feature contentTreeMin = new MapMaxKey<String,Double>
+	feature scheduler = new PeriodicTrigger<String>
+	feature ctrl = new LoadBalancerController
+	feature lbForwardHost = new FileWriter {
+		file = lbProxyConf
+	}
+	
+	connect contentTreeSub.output to contentTree.input
+	connect contentTree.output to contentTreeMin.input
+	connect contentTreeMin.output to scheduler.input
+	connect scheduler.output to ctrl.hostname
+	connect ctrl.hostname to lbForwardHost.value
+}

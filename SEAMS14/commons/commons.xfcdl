@@ -1,0 +1,257 @@
+package commons
+		
+import fr.unice.i3s.actress.modeling.fcdl.japi.*
+import java.lang.System
+import java.util.Map
+import java.util.HashMap
+
+active sensor FileTailer {
+	out push port lines: String
+	port selfport: String
+
+	property file: String
+
+	act activate(selfport;;lines)
+}
+
+sensor FileReader {
+	out pull port output: String
+
+	property file: String
+	property all: boolean
+
+	act activate(selfport;;output)
+}
+
+sensor Hostname {
+	out pull port hostname: String
+	
+	act activate(hostname;;)
+}
+
+controller PController {
+  in push port input: double   
+  out push port output: double
+  property Kp: double // proportional gain
+  property reference: double // reference input
+  property loBnd: double // lower bound
+  property upBnd: double // upper bound
+  
+  provided effector setKp: double
+
+  act activate(input; ; output)
+  act onSetKp(setKp; ;)
+  
+  implementation xbase {
+    var U = reference // new variable
+    // implementation of the `act activate(input; ; output)`
+    act activate {
+        val E = reference - input  // computes the error        
+        U = U + Kp * E // computes new output
+        if (U < loBnd) U = loBnd; if (U > upBnd) U = upBnd // corr. bounds
+        U // returns the result
+    }
+    
+    act onSetKp {
+    	Kp = setKp
+    }
+  }
+}
+
+processor Tuple2<T1,T2> {
+	in port input1: T1
+	in port input2: T2
+	out port output: commons.impl.Tuple2<T1,T2>
+	
+	act activate(input1,input2;;output)
+	
+	implementation xbase {
+	 	act activate {
+	 		new commons.impl.Tuple2<T1,T2>(input1,input2)
+	 	}
+	}
+}
+
+processor Queue<T> {
+	push out port output: T
+	pull in port input: T
+	
+	act onPush(input;;)
+	act onPull(output;;)
+	
+	 implementation xbase {
+	 	var last: T
+	 	
+	 	act onPush {
+	 		last = input
+	 	}
+	 	
+	 	act onPull {
+	 		last
+	 	}
+	 }
+}
+
+processor MapStore<K,V> {
+	push in port input: commons.impl.Tuple2<K,V>
+	pull out port output: Map<K,V>
+	
+	act onPush(input;;)
+	act onPull(output;;)
+	
+	implementation xbase {
+		val map = new HashMap<K,V>()
+		
+		act onPush {
+			map.put(input.t1, input.t2)
+		}
+		
+		act onPull {
+			map
+		}
+	}
+}
+
+processor MapMaxKey<K,V extends Comparable<V>> {
+	in port input: Map<K,V>
+	out port output: K
+	
+	act activate(input;;output)
+	
+	implementation xbase {
+		act activate {
+        	val i = input.entrySet.iterator
+        	val candidate = i.next
+
+        	while (i.hasNext) {
+            	val next = i.next();
+            	if (next.value.compareTo(candidate.value) > 0)
+                	candidate = next;
+        	}
+        	return candidate.key;
+       	}
+	}
+}
+
+processor MapAvgValue<K,V extends Number> {
+	in port input: Map<K,V>
+	out port output: double
+	
+	act activate(input;;output)
+	
+	implementation xbase {
+		act activate {
+			if (input.size > 0) {
+				val sum = input.values.map[doubleValue].reduce[a,b | a+b]
+				sum / input.size
+			} else {
+				0
+			}
+		}
+	}
+}
+
+active sensor EventBusSubscriber<T> {
+	out push port output: T
+	port selfport: T
+	
+	property eventBus: String
+	property channel: String
+	
+	act activate(selfport;;output) 
+}
+
+effector EventBusPublisher<T> {
+	in push port input: T
+	
+	property eventBus: String
+	property channel: String
+	
+	act activate(input;;) 
+}
+
+effector FileWriter {
+	in push port value: String
+	
+	property file: String
+
+	act activate(value;;)
+}
+
+processor Accumulator {
+	in push port input: long
+	out pull port sum: long
+
+    act onInput(input;;)
+	act onSum(sum;;)
+
+	implementation xbase {
+		var value: Long = 0L
+
+		act onInput {
+		  value = value + input
+		}
+
+		act onSum {
+		  value
+		}
+	}
+}
+
+active sensor SineWave {
+	out push port output: double
+	property amplitude: double
+	property period: double
+	
+	act activate(selfport;;output)
+}
+
+active processor PeriodicTrigger<T> {
+	push out port output: T
+	pull in port input: T
+	port selfport: long
+	
+	provided sensor period: Duration
+	provided effector setPeriod: Duration
+
+	property initialPeriod: Duration
+
+	act activate(selfport; input; output?)
+	act onSetPeriod(setPeriod;;period?)
+
+    implementation xbase {
+
+	    var currentPeriod = initialPeriod
+		var task: Cancellable
+
+		def init {
+			reschedule
+		}
+
+		def destroy {
+			task.cancel
+		}
+
+		act activate {
+		  log.info("Activate at "+selfport)
+
+		  switch data : input.get {
+            case data.present : output.put(data.get)   		  
+          }
+		}
+
+		act onSetPeriod {
+		  	if (setPeriod != currentPeriod) {  		
+		  	  currentPeriod = setPeriod
+		  	  reschedule()
+		  	  period.put(currentPeriod)
+		  	}    
+		}
+
+		def reschedule {
+			task = context.scheduler.schedule(2.seconds, currentPeriod) [|
+				selfport.put(0L)//System::currentTimeMillis)
+			]
+		}
+	}
+}		

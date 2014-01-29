@@ -1,0 +1,31 @@
+package cs1
+
+import commons.FileTailer
+import commons.FileWriter
+
+processor AccessLogParser {
+    in push port lines: String
+    out push port size: long
+	out push port requests: int
+
+	act activate(lines;;requests,size)
+}
+
+composite ApacheWebServer {
+    property accessLogFile: String
+    property contentTreeFile: String
+	
+	feature accessLog = new FileTailer {
+	  file = accessLogFile
+	}
+	feature accessLogParser = new AccessLogParser
+	feature adaptor = new FileWriter {
+  	  file = contentTreeFile
+	}
+	
+    connect accessLog.lines to accessLogParser.lines
+
+	promote accessLogParser.size
+	promote accessLogParser.requests
+	promote adaptor.value as contentTree
+}

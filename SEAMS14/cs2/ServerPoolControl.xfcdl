@@ -1,0 +1,54 @@
+package cs2
+
+import commons.*
+
+effector ClusterManager {
+	in push port numOfServers: int
+	
+	// TODO: should not be stored in plain text
+    property openstackAccessKey: String
+	// TODO: should not be stored in plain text
+    property openstackSecretAccessKey: String
+    property openstackApiEndpoint: String	
+	
+	act activate(numOfServers;;)
+}
+
+@Main
+composite ServerPoolControl {
+	
+	property eventBus: String
+	property lbProxyConf: String
+    property openstackAccessKey: String
+    property openstackSecretAccessKey: String
+    property openstackApiEndpoint: String
+    property refServers: int
+    property minServers: int
+    property maxServers: int
+    property k: double	
+	
+	feature contentTreeSub = new EventBusSubscriber<commons.impl.Tuple2<String,Double>> {
+		eventBus = this.eventBus
+		channel = "contentTree"
+	}
+	feature contentTree = new MapStore<String,Double>
+	feature contentTreeAvg = new MapAvgValue<String,Double>
+	feature scheduler = new PeriodicTrigger<Double>
+	feature serverPoolConroller = new PController {
+  	  Kp = this.k
+      reference = this.refServers
+      loBnd = this.minServers
+      upBnd = this.maxServers		
+	}
+	feature clusterManager = new ClusterManager {
+		openstackAccessKey = this.openstackAccessKey
+		openstackSecretAccessKey = this.openstackSecretAccessKey
+		openstackApiEndpoint = this.openstackApiEndpoint
+	}
+	
+	connect contentTreeSub.output to contentTree.input
+	connect contentTree.output to contentTreeAvg.input
+	connect contentTreeAvg.output to scheduler.input
+	connect scheduler.output to serverPoolConroller.input
+	connect serverPoolConroller.output to clusterManager.numOfServers
+}

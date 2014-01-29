@@ -1,0 +1,38 @@
+package cs2
+
+import commons.*
+
+@Main
+composite LocalApacheQOS {
+	property k: double
+	property targetUtilization: double
+	property M: int
+	property a: double
+	property b: double
+	property accessLogFile: String 
+		
+	property eventBus: String
+	
+	feature server = new ApacheQOS {
+	  k = this.k
+	  targetUtilization = this.targetUtilization
+	  M = this.M
+	  a = this.a
+	  b = this.b 
+	  accessLogFile = this.accessLogFile 
+	}
+	
+	feature hostname = new Hostname
+	feature contentTreeWithHost = new Tuple2<String, Double>
+	feature contentTree = new Queue<Double>
+	feature scheduler = new PeriodicTrigger<commons.impl.Tuple2<String, Double>>
+	feature contentTreePub = new EventBusPublisher<commons.impl.Tuple2<String, Double>> {
+		eventBus = this.eventBus
+	}
+	
+	connect hostname.hostname to contentTreeWithHost.input1
+	connect server.contentTree to contentTree.input
+	connect contentTree.output to contentTreeWithHost.input2
+	connect contentTreeWithHost.output to scheduler.input
+	connect scheduler.output to contentTreePub.input
+}

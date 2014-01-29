@@ -1,0 +1,25 @@
+package cs4
+
+import commons.*
+
+controller AdaptiveController {
+	push in port input: commons.impl.Tuple2<Double,Double>
+	push out port output: double
+}
+
+composite AdaptiveControl {
+	
+	feature contentTree = new Queue<Double>
+	feature sample = new Tuple2<Double,Double>
+	feature scheduler = new PeriodicTrigger<commons.impl.Tuple2<Double,Double>>
+	feature adaptiveController = new AdaptiveController
+	
+	connect contentTree.output to sample.input2
+	connect sample.output to scheduler.input
+	connect scheduler.output to adaptiveController.input
+	
+	promote sample.input1 as utilization
+	promote contentTree.input as contentTree
+	promote adaptiveController.output as Kp
+	
+}

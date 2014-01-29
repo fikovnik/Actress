@@ -1,0 +1,29 @@
+package cs1
+
+@Main
+composite ApacheQOS {
+	property k: double
+	property targetUtilization: double
+	property M: int
+	property a: double
+	property b: double
+	property accessLogFile: String 
+	property contentTreeFile: String 
+	
+	feature server = new ApacheWebServer {
+	  accessLogFile = this.accessLogFile
+	  contentTreeFile = this.contentTreeFile
+	}
+	
+	feature control = new QOSControl {
+	  k = this.k
+	  targetUtilization = this.targetUtilization
+	  M = this.M
+	  a = this.a
+	  b = this.b 
+	}
+
+	connect server.requests to control.requests
+	connect server.size to control.size
+	connect control.contentTree to server.contentTree	
+}
