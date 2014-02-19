@@ -5,18 +5,27 @@ title: The ACTRESS Modeling Environment
 
 ## About ##
 
-To cope with evolving requirements and environmental conditions, software systems must be adaptive. A common approach to developing self-adaptive systems is to architect them around feedback control loops (FCLs). While advances have led to more explicit and safer design of some control architectures, there is still a lack of comprehensive support for architecting both the control (decision making) and the integration (monitoring, reconfiguration) parts of FCLs into the targeted systems. To address this problem we provide a toolchain, ACTRESS, that enables software architects to design and integrate feedback control loops using model-driven engineering techniques. The toolchain relies on a reflective, fine-grained design and runtime modeling environment for feedback control architectures that permits us to build complex solutions with hierarchical layers of control loops. It consists of 
+To cope with evolving requirements and environmental conditions, software systems must be adaptive.
+A common approach to developing self-adaptive systems is to architect them around feedback control loops (FCLs).
+Advances have led to more explicit and safer design of some control architectures, however, there is a need for more integrated and systematic approaches that support end-to-end integration of FCLs into software systems.
 
-* a DSL to architect, reuse and program loop elements
-* a support for verification using a variety of techniques that enables one to easily check different structural and behavioral properties on FCLs, and 
-* an actor-oriented runtime environment.
+We propose a tooled approach that provides researchers and engineers with flexible abstractions of FCLs allowing them to more easily integrate self-adaptation mechanisms into software systems.
+It promotes separation of concerns whereby the development of system touchpoints, adaptation engine and the overall architecture can be decomposed and implemented by experts in the respective domains at different levels of abstraction.
+It is based on a technologically agnostic domain-specific modeling language called Feedback Control Definition Language (FCDL).
+It defines feedback architectures as hierarchically organized networks of adaptive elements, representing FCL processes such as monitoring, decision-making and reconfiguration.
+The language is statically typed, handles composition and supports element distribution via location transparency.
+Moreover it is reflective thereby enabling to coordinate and organize multiple control loops using different control schemes.
+The use of the language is facilitated by an Eclipse-based modeling environment called ACTRESS.
+It includes support for automated architecture consistency checking, and for code generation in which FCDL architectures are transformed into executable applications.
+This provides a strong mapping between the control system design and its runtime implementation.
 
-The ACTRESS Modeling Environment captures an outgoing work towards the goal of providing a model-driven development toolkit for designing, implementing and validating adaptive behavior that can be added on a top of existing computing systems thus turning them into self-adaptive systems.
-This toolkit gives system administrators, control theorists and other computer scientists building blocks that allows them to quickly prototype and test adaptation strategies and abstracts them from the painful low-level implementation details.
-
-ACTRESS is a modeling environment built using [SIGMA](http://fikovnik.net/Sigma).
+ACTRESS modeling environment built using [SIGMA](http://fikovnik.net/Sigma).
 
 ## Publications ##
+
+* Filip Křikava, Philippe Collet, Robert France. "ACTRESS: Domain­Specific Modeling of Self­Adaptive Software Architectures" in Proceedings of the Proceedings of the 29th Symposium On Applied Computing (SAC) -­ Dependable and Adaptive Distributed Systems track, 2014
+
+* Filip Krikava, Philippe Collet, Robert France. "Manipulating Models Using Internal Domain­Specific Languages" in Proceedings of the Proceedings of the 29th Symposium On Applied Computing (SAC) -­ Programming Language track, short­paper, 2014
 
 * Filip Křikava, Philippe Collet. "On the Use of an Internal DSL for Enriching EMF Models" in Proceedings of the International Workshop on OCL and Textual Modelling 2012 (OCL), Innsbruck, September 2012. 
 
@@ -36,7 +45,7 @@ This work is partly funded by the [ANR SALTY project](https://salty.unice.fr/) u
 
 ## Contact ##
 
-ACTRESS is being developed by the [MODALIS](http://modalis.polytech.unice.fr/) team of [I3S Laboratory](http://www.i3s.unice.fr/I3S/).
+ACTRESS is being developed by the [MODALIS](http://modalis.polytech.unice.fr/) team of [I3S Laboratory](http://www.i3s.unice.fr/I3S/) and [SPIRALS](https://team.inria.fr/spirals/) team of [INRIA Lille](http://www.inria.fr/en/centre/lille).
 
 For further information, please contact:
 
