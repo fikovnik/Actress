@@ -34,8 +34,8 @@ composite ServerPoolControl {
 	feature contentTree = new MapStore<String,Double>
 	feature contentTreeAvg = new MapAvgValue<String,Double>
 	feature scheduler = new PeriodicTrigger<Double>
-	feature serverPoolConroller = new PController {
-  	  Kp = this.k
+	feature serverPoolConroller = new IController {
+  	  KI = this.k
       reference = this.refServers
       loBnd = this.minServers
       upBnd = this.maxServers		

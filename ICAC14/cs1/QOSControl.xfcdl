@@ -2,7 +2,7 @@ package cs1
 
 import commons.Accumulator
 import commons.PeriodicTrigger
-import commons.PController
+import commons.IController
 
 processor LoadMonitor {
 	in pull port requests: int
@@ -49,8 +49,8 @@ composite QOSControl {
 		initialPeriod = 10.seconds
 	}
 	
-	feature utilizationController = new PController {
-		Kp = this.k
+	feature utilizationController = new IController {
+		KI = this.k
 		reference = this.targetUtilization
 		loBnd = 0
 		upBnd = this.M

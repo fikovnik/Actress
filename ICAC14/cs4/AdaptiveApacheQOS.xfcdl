@@ -31,5 +31,5 @@ composite AdaptiveApacheQOS {
 	
 	connect control.utilization to adaptiveControl.utilization
 	connect control.contentTree to adaptiveControl.contentTree
-	connect adaptiveControl.Kp to control.Kp	
+	connect adaptiveControl.KI to control.KI	
 }

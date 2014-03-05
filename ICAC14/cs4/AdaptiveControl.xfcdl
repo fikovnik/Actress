@@ -20,6 +20,6 @@ composite AdaptiveControl {
 	
 	promote sample.input1 as utilization
 	promote contentTree.input as contentTree
-	promote adaptiveController.output as Kp
+	promote adaptiveController.output as KI
 	
 }

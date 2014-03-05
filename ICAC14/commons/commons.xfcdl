@@ -29,31 +29,31 @@ sensor Hostname {
 	act activate(hostname;;)
 }
 
-controller PController {
+controller IController {
   in push port input: double   
   out push port output: double
-  property Kp: double // proportional gain
+  property KI: double // control change ratio
   property reference: double // reference input
   property loBnd: double // lower bound
   property upBnd: double // upper bound
   
-  provided effector setKp: double
+  provided effector setKI: double
 
   act activate(input; ; output)
-  act onSetKp(setKp; ;)
+  act onSetKI(setKI; ;)
   
   implementation xbase {
     var U = reference // new variable
     // implementation of the `act activate(input; ; output)`
     act activate {
         val E = reference - input  // computes the error        
-        U = U + Kp * E // computes new output
+        U = U + KI * E // computes new output
         if (U < loBnd) U = loBnd; if (U > upBnd) U = upBnd // corr. bounds
         U // returns the result
     }
     
-    act onSetKp {
-    	Kp = setKp
+    act onSetKI {
+    	KI = setKI
     }
   }
 }

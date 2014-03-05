@@ -24,8 +24,8 @@ composite QOSControl {
 		initialPeriod = 10.seconds
 	}
 	
-	feature utilizationController = new PController {
-		Kp = this.k
+	feature utilizationController = new IController {
+		KI = this.k
 		reference = this.targetUtilization
 		loBnd = 0
 		upBnd = this.M
@@ -38,5 +38,5 @@ composite QOSControl {
 	promote responseSizeCounter.input as size
 	promote loadMonitor.utilization
 	promote utilizationController.output as contentTree
-	promote utilizationController.setKp as Kp
+	promote utilizationController.setKI as KI
 }

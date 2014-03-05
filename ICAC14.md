@@ -13,7 +13,7 @@ The complete FCDL and ACTRESS documentation is available in the [technical repor
     * FileTailer
     * FileReader
     * Hostname
-    * PController
+    * IController
     * Tuple2
     * Queue
     * MapStore
